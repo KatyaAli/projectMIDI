@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>WebMidi.js Quick Start</title>
+    <script src="https://cdn.jsdelivr.net/npm/webmidi@latest/dist/iife/webmidi.iife.js"></script>
+
+    <script type="module">
+
+    // Enable WEBMIDI.js and trigger the onEnabled() function when ready
+    WebMidi
+      .enable()
+      .then(onEnabled)
+      .catch(err => alert(err)); // (A) First potential failure point: WebMidi.js enablement
+
+    // Function triggered when WEBMIDI.js is ready
+    function onEnabled() {
+
+      // Display available MIDI input devices
+      if (WebMidi.inputs.length < 1) { // (B) Check for any devices
+        document.body.innerHTML+= "No device detected."; // (C) Message if no devices at all
+      } else {
+        WebMidi.inputs.forEach((device, index) => {
+          document.body.innerHTML+= `${index}: ${device.name} <br>`; // (D) Lists detected devices
+        });
+      }
+      const mySynth = WebMidi.inputs[0]; // (E) Selects the first device in the list
+  
+      mySynth.channels[1].addListener("noteon", e => { // (F) THIS IS A CRITICAL POTENTIAL FAILURE POINT
+      document.body.innerHTML+= `${e.note.name} <br>`; // (G) What appears on success
+    });
+  
+  }
+  
+</script>
+
+  </head>
+  
+  <body>
+    <h1>WebMidi.js Quick Start</h1>
+  </body>
+
+</html>
